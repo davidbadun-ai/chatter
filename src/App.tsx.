@@ -1,0 +1,15 @@
+async function addPost() {
+  if (!title || !content) return;
+
+  const { data, error } = await supabase
+    .from("posts")
+    .insert([{ title, content, likes: 0 }])
+    .select();
+
+  console.log("INSERT RESULT:", data);
+  console.log("INSERT ERROR:", error);
+
+  setTitle("");
+  setContent("");
+  fetchPosts();
+}
