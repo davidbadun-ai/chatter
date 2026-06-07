@@ -1,16 +1,17 @@
+import { useState, useEffect } from "react";
+
 type Post = {
   id: number;
   title: string;
   content: string;
   likes: number;
 };
-import { useState, useEffect } from "react";
 
 export default function App() {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [editId, setEditId] = useState(null);
+  const [editId, setEditId] = useState<number | null>(null);
 
   // LOAD FROM LOCAL STORAGE
   useEffect(() => {
@@ -26,19 +27,19 @@ export default function App() {
   function addOrUpdatePost() {
     if (!title.trim() || !content.trim()) return;
 
-    if (editId) {
+    if (editId !== null) {
       setPosts(
-        posts.map(p =>
+        posts.map((p) =>
           p.id === editId ? { ...p, title, content } : p
         )
       );
       setEditId(null);
     } else {
-      const newPost = {
+      const newPost: Post = {
         id: Date.now(),
         title,
         content,
-        likes: 0
+        likes: 0,
       };
       setPosts([newPost, ...posts]);
     }
@@ -47,19 +48,19 @@ export default function App() {
     setContent("");
   }
 
-  function deletePost(id) {
-    setPosts(posts.filter(p => p.id !== id));
+  function deletePost(id: number) {
+    setPosts(posts.filter((p) => p.id !== id));
   }
 
-  function likePost(id) {
+  function likePost(id: number) {
     setPosts(
-      posts.map(p =>
-        p.id === id ? { ...p, likes: (p.likes || 0) + 1 } : p
+      posts.map((p) =>
+        p.id === id ? { ...p, likes: p.likes + 1 } : p
       )
     );
   }
 
-  function startEdit(post) {
+  function startEdit(post: Post) {
     setTitle(post.title);
     setContent(post.content);
     setEditId(post.id);
@@ -72,7 +73,7 @@ export default function App() {
       padding: "20px",
       fontFamily: "Arial"
     }}>
-      <h1>🔥 Chatter Pro</h1>
+      <h1>🔥 Chatter</h1>
 
       <input
         placeholder="Title"
@@ -98,7 +99,7 @@ export default function App() {
           border: "none"
         }}
       >
-        {editId ? "✏️ Update Post" : "➕ Create Post"}
+        {editId !== null ? "✏️ Update Post" : "➕ Create Post"}
       </button>
 
       <hr />
@@ -106,7 +107,7 @@ export default function App() {
       {posts.length === 0 ? (
         <p>No posts yet 🚀</p>
       ) : (
-        posts.map(post => (
+        posts.map((post) => (
           <div
             key={post.id}
             style={{
@@ -119,18 +120,17 @@ export default function App() {
             <h3>{post.title}</h3>
             <p>{post.content}</p>
 
-            <p>❤️ {post.likes || 0}</p>
+            <p>❤️ {post.likes}</p>
 
-            <button onClick={() => likePost(post.id)}>Like</button>
+            <button onClick={() => likePost(post.id)}>
+              Like
+            </button>
 
             <button onClick={() => startEdit(post)} style={{ marginLeft: "10px" }}>
               Edit
             </button>
 
-            <button
-              onClick={() => deletePost(post.id)}
-              style={{ marginLeft: "10px", color: "red" }}
-            >
+            <button onClick={() => deletePost(post.id)} style={{ marginLeft: "10px", color: "red" }}>
               Delete
             </button>
           </div>
