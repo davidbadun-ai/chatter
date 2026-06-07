@@ -1,3 +1,9 @@
+type Post = {
+  id: number;
+  title: string;
+  content: string;
+  likes: number;
+};
 import { useState, useEffect } from "react";
 
 export default function App() {
